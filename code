@@ -1,0 +1,19 @@
+Function DISK_Details()
+{
+param
+(
+[Parameter(mandatory = $true)]
+[string]$computername="localhost",
+[Parameter(mandatory = $true)]
+[int]$Drivetype=3)
+
+$DISK = Get-WmiObject Win32_LogicalDisk -comp $computername -Filter "DriveType=$Drivetype" | Where-Object{($_.FreeSpace / $_.Size) -gt .1}
+
+$DiskInfo = [PSCustomObject] @{'Device' = $DISK.DeviceID
+                                'Freespace' = $DISK.FreeSpace
+                                 'Size' = $DISK.Size }
+Write-Output $DiskInfo
+
+}
+
+DISK_Details
